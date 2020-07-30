@@ -5,6 +5,14 @@ module.exports = {
     author: `@gatsbyjs`,
   },
   plugins: [
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `bike-specs`,
+        path: `${__dirname}/src/bike-specs`,
+      },
+    },
+    `gatsby-transformer-remark`,
     `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-source-filesystem`,

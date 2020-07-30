@@ -1,7 +1,38 @@
-/**
- * Implement Gatsby's Node APIs in this file.
- *
- * See: https://www.gatsbyjs.org/docs/node-apis/
- */
+exports.createPages = async ({ actions, graphql, reporter}) => {
+  const { createPage } = actions
 
-// You can delete this file if you're not using it
+  const bikeSpecTemplate = require.resolve(`./src/bikeSpecTemplate.js`)
+
+  const result = await graphql(`
+    {
+      allMarkdownRemark(
+        
+        limit: 1000
+      ) {
+        edges {
+          node {
+            frontmatter {
+              slug
+            }
+          }
+        }
+      }
+    }
+  `)
+
+  //Handle errors
+  if (result.errors) {
+    reporter.panicOnBuild(`Error while running GQL query`)
+    return
+  }
+
+  result.data.allMarkdownRemark.edges.forEach(({node}) => {
+    createPage({
+      path:node.frontmatter.slug,
+      component: bikeSpecTemplate,
+      context: {
+        slug: node.frontmatter.slug,
+      },
+    })
+  })
+}
